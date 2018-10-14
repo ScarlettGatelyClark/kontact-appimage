@@ -49,7 +49,7 @@ node('linux') {
                     rbenv local 2.4.1 && gem install bundler && ls -l && bundle install --binstubs && bundle show rspec
                 else
                     echo "Rbenv exists, moving on"
-                    export PATH=$PATH:~/.rbenv/bin
+                    ls -l ~/rbenv/bin/
                     rbenv install 2.4.1
                     rbenv init -
                     rbenv local 2.4.1 && gem install bundler && ls -l && bundle install --binstubs && bundle show rspec

@@ -37,9 +37,9 @@ node('linux') {
                 extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kmail']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://anongit.kde.org/kmail']]]
             }
             stage( 'Setup' ) {
-                sh 'echo "gem: --no-rdoc --no-ri" >> ~/.gemrc'
+                sh 'echo "gem: --no-rdoc --no-ri" >> /var/lib/jenkins/.gemrc'
                 sh '''
-                    export PATH=$PATH:~/.rbenv/bin
+                    export PATH=$PATH:/var/lib/jenkins/.rbenv/bin
                     rbenv init -
                     rbenv install 2.4.1
                     rbenv local 2.4.1 && gem install bundler && ls -l && bundle install --binstubs && bundle show rspec

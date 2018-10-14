@@ -39,22 +39,9 @@ node('linux') {
         stage( 'Setup' ) {
             sh 'echo "gem: --no-rdoc --no-ri" >> ~/.gemrc'
             sh '''
-                set -e
-                if [[ ! -d ~/.rbenv ]] ; then
-                    git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
-                    git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
-                    export PATH=$PATH:~/.rbenv/bin
-                    rbenv install 2.4.1
-                    rbenv init -
-                    rbenv local 2.4.1 && gem install bundler && ls -l && bundle install --binstubs && bundle show rspec
-                else
-                    echo "Rbenv exists, moving on"
-                    ls -l ~/.rbenv/bin/
-                    rbenv install 2.4.1
-                    rbenv init -
-                    rbenv local 2.4.1 && gem install bundler && ls -l && bundle install --binstubs && bundle show rspec
-                fi
-                '''
+                rbenv install 2.4.1
+                rbenv local 2.4.1 && gem install bundler && ls -l && bundle install --binstubs && bundle show rspec
+               '''
             sh 'bundle install'
             def WORKSPACE=pwd()
         }

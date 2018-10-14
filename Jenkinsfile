@@ -44,12 +44,16 @@ node('linux') {
                    if [[ ! -d ~/.rbenv ]] ; then
                        git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
                        git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
-                       rbenv install 2.4.1
+                       if [[ ! -d /var/lib/jenkins/.rbenv/versions/2.4.1 ]] ; then
+                        rbenv install 2.4.1
+                       fi
                        rbenv init -
                        rbenv global 2.4.1 && gem install bundler && ls -l && bundle install --binstubs && bundle show rspec
                    else
                        echo "Rbenv exists, moving on"                       
-                       rbenv install 2.4.1
+                       if [[ ! -d /var/lib/jenkins/.rbenv/versions/2.4.1 ]] ; then
+                        rbenv install 2.4.1
+                       fi
                        rbenv init -
                        rbenv global 2.4.1 && gem install bundler && ls -l && bundle install --binstubs && bundle show rspec
                    fi

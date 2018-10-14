@@ -38,7 +38,7 @@ node('linux') {
             }
             stage( 'Setup' ) {
                 sh 'echo "gem: --no-rdoc --no-ri" >> /var/lib/jenkins/.gemrc'
-                sh '''
+                sh '''#!/usr/bin/env bash
                     set -e
                     export PATH=$PATH:/var/lib/jenkins/.rbenv/bin
                    if [[ ! -d ~/.rbenv ]] ; then
@@ -57,8 +57,8 @@ node('linux') {
                        rbenv init -
                        rbenv global 2.4.1 && gem install bundler && ls -l && bundle install --binstubs && bundle show rspec
                    fi
+                   bundle install
                 '''
-                sh 'bundle install'
                 def WORKSPACE=pwd()
             }
             stage( 'Build' ) {

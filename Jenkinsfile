@@ -63,7 +63,13 @@ node('linux') {
                 def WORKSPACE=pwd()
             }
             stage( 'Build' ) {
-                sh 'bundle exec deploy.rb'
+                sh '''#!/usr/bin/env bash
+                    set -e
+                    export PATH=$PATH:/var/lib/jenkins/.rbenv/bin
+                    eval "$(rbenv init -)"
+                    rbenv local 2.4.1
+                    bundle exec deploy.rb
+                    '''
             }
             stage('Tests') {
                 sh 'find . -type f -exec file {} \\; | grep "not stripped"'

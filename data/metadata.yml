@@ -1,0 +1,175 @@
+name: kmail
+binary: kmail
+packages:
+  #app specifc
+  - xsltproc
+  - libsasl2-dev
+  - libldap2-dev
+  - fonts-noto
+  - unzip
+  - libical-dev
+  - libxapian-dev
+  - xsdcxx
+  - libxerces-c-dev
+  - libcurl4-openssl-dev
+  - mysql-client-5.7
+  - libgpgme11-dev
+  - libqrencode-dev
+  - libgpg-error-dev
+frameworks:
+  build_kf5: true
+  frameworks:
+    - extra-cmake-modules
+    - kcoreaddons
+    - ki18n
+    - kitemviews
+    - kconfig
+    - kauth
+    - kcodecs
+    - karchive
+    - kdoctools
+    - kguiaddons
+    - kwidgetsaddons
+    - kconfigwidgets
+    - kiconthemes
+    - kcompletion
+    - kwindowsystem
+    - kcrash
+    - kdbusaddons
+    - kservice
+    - sonnet
+    - ktextwidgets
+    - kglobalaccel
+    - kxmlgui
+    - solid
+    - kbookmarks
+    - kjobwidgets
+    - gpgmepp
+    - phonon
+    - phonon-gstreamer
+    - knotifications
+    - kwallet
+    - kio
+    - kparts
+    - kpty
+    - attica
+    - knewstuff
+    - kitemmodels
+    - kplotting
+    - kdewebkit
+    - kdesignerplugin
+    - kmime
+    - syntax-highlighting
+    - akonadi
+    - akonadi-mime
+    - akonadi-notes
+    - kcontacts
+    - prison
+    - akonadi-contacts
+    - grantleetheme
+    - kemoticons
+    - kpimtextedit
+    - libkleo
+    - kimap
+    - kpackage
+    - kdeclarative
+    - kcmutils
+    - kldap
+    - kdecoration
+    - breeze
+    - kactivities
+    - plasma-framework
+    - threadweaver
+    - krunner
+    - kunitconversion
+    - kinit
+    - kded
+    - kdelibs4support
+    - kcalcore
+    - akonadi-search
+    - libkdepim
+    - pimcommon
+    - kdepim-apps-libs
+    - libgravatar
+    - kidentitymanagement
+    - kmailtransport
+    - kmbox
+    - messagelib
+    - knotifyconfig
+    - kcalutils
+    - kontactinterface
+    - libksieve
+    - mailimporter
+    - mailcommon
+    - ktnef
+    - kross
+    - kdav
+    - kholidays
+    - kalarmcal
+    - akonadi-calendar
+    - libkgapi
+    - kdiagram
+    - calendarsupport
+    - eventviews
+    - incidenceeditor
+    - kdepim-addons
+    - ktexteditor
+    - kmail-account-wizard
+type: git
+url: http://anongit.kde.org/kmail
+buildsystem: cmake
+buildoptions: "-DCMAKE_INSTALL_PREFIX=/opt/usr -DKDE_INSTALL_SYSCONFDIR=/opt/etc -DBUILD_TESTING=OFF"
+dependencies:
+  - cpan:
+      build:
+        buildsystem: custom
+        buildoptions: cpan URI::Escape
+      depname: cpan
+      source:
+        type: none
+        url: ''
+  - grantlee5:
+      build:
+        buildsystem: cmake
+        buildoptions: '-DCMAKE_INSTALL_PREFIX:PATH=/opt/usr CMAKE_BUILD_TYPE=Release'
+      depname: grantlee
+      source:
+        type: git
+        url: 'https://github.com/steveire/grantlee'
+        branch: 'v5.1.0'
+  - gpgme:
+      build:
+        buildsystem: make
+        buildoptions: '--prefix=/opt/usr'
+      depname: gpgme-1.12.0
+      source:
+        type: bz2
+        url: https://www.gnupg.org/ftp/gcrypt/gpgme/gpgme-1.12.0.tar.bz2
+kf5_deps:
+  - libkolabxml:
+      build:
+        buildsystem: cmake
+        buildoptions: '-DCMAKE_INSTALL_PREFIX=/opt/usr -DQT5_BUILD=TRUE -DBUILD_TESTS=FALSE -DPHP_BINDINGS=ON -DPYTHON_BINDINGS=ON'
+      depname: libkolabxml
+      source:
+        type: git
+        url: 'https://git.kolab.org/diffusion/LKX/libkolabxml.git'
+        branch: 'libkolabxml-1.1'
+  - libkolab:
+      build:
+        buildsystem: cmake
+        buildoptions: '-DCMAKE_INSTALL_PREFIX=/opt/usr'
+      depname: libkolab
+      source:
+        type: git
+        url: 'https://git.kolab.org/diffusion/LK/libkolab.git'
+        branch: 'libkolab-1.0.2'
+  - kdepim-runtime:
+      build:
+        buildsystem: cmake
+        buildoptions: '-DCMAKE_INSTALL_PREFIX=/opt/usr -DKDE_INSTALL_SYSCONFDIR=/opt/etc -DBUILD_TESTING=OFF'
+      depname: kdepim-runtime
+      source:
+        type: git
+        url: 'https://anongit.kde.org/kdepim-runtime'
+        branch: 'master'

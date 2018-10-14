@@ -43,7 +43,7 @@ node('linux') {
                 then
                 git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
                 git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
-                export PATH=$PATH:~/.rbenv
+                export PATH=$PATH:~/.rbenv/bin
                 rbenv install 2.4.1
                 rbenv init -
                 rbenv local 2.4.1 && gem install bundler && ls -l && bundle install --binstubs && bundle show rspec

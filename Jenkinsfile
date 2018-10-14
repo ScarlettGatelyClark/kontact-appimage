@@ -22,47 +22,45 @@ THE SOFTWARE.
 
 node('linux') {
 
+     wrap([$class: 'TimestamperBuildWrapper']) {
+        currentBuild.result = "SUCCESS"
+        properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '3')), disableConcurrentBuilds(), \
+        [$class: 'GithubProjectProperty', displayName: '', projectUrlStr: 'https://github.com/ScarlettGatelyClark/kontact.git'], pipelineTriggers([[$class: 'GitHubPushTrigger'], pollSCM('H/15 * * * *')])])
 
-    currentBuild.result = "SUCCESS"
-    properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '', numToKeepStr: '3')), disableConcurrentBuilds(), \
-    [$class: 'GithubProjectProperty', displayName: '', projectUrlStr: 'https://github.com/sgmoore-appimage-recipes/kontact.git'], pipelineTriggers([[$class: 'GitHubPushTrigger'], pollSCM('H/15 * * * *')])])
+        try {
 
-    try {
-
-        stage( 'Checkout' ) {
-            checkout scm
-            checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, \
-            extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'appimage-template']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://anongit.kde.org/sysadmin/appimage-tooling']]]
-            checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, \
-            extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kmail']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://anongit.kde.org/kmail']]]
-       }
-        stage( 'Setup' ) {
-            sh 'echo "gem: --no-rdoc --no-ri" >> ~/.gemrc'
-            sh '''
-                rbenv install 2.4.1
-                rbenv local 2.4.1 && gem install bundler && ls -l && bundle install --binstubs && bundle show rspec
-               '''
-            sh 'bundle install'
-            def WORKSPACE=pwd()
+            stage( 'Checkout' ) {
+                checkout scm
+                checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, \
+                extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'appimage-template']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://anongit.kde.org/sysadmin/appimage-tooling']]]
+                checkout changelog: true, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, \
+                extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kmail']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://anongit.kde.org/kmail']]]
+            }
+            stage( 'Setup' ) {
+                sh 'echo "gem: --no-rdoc --no-ri" >> ~/.gemrc'
+                sh '''
+                    rbenv init -
+                    rbenv install 2.4.1
+                    rbenv local 2.4.1 && gem install bundler && ls -l && bundle install --binstubs && bundle show rspec
+                '''
+                sh 'bundle install'
+                def WORKSPACE=pwd()
+            }
+            stage( 'Build' ) {
+                sh 'bundle exec deploy.rb'
+            }
+            stage('Tests') {
+                sh 'find . -type f -exec file {} \\; | grep "not stripped"'
+                step([$class: 'LogParserPublisher', failBuildOnError: true, projectRulePath: 'appimage-template/parser.rules', showGraphs: true, unstableOnWarning: true, useProjectRule: true])
+            }
         }
-        stage( 'Build' ) {
-            sh 'bundle exec deploy.rb'
-       }
-       stage('Tests') {
-            sh 'find . -type f -exec file {} \\; | grep "not stripped"'
-            step([$class: 'LogParserPublisher', failBuildOnError: true, projectRulePath: 'appimage-template/parser.rules', showGraphs: true, unstableOnWarning: true, useProjectRule: true])
-      }
-   }
 
+        catch (err) {
 
+            currentBuild.result = "FAILURE"
 
-
-    catch (err) {
-
-        currentBuild.result = "FAILURE"
-
-            echo "FAILURE"
-        throw err
+                echo "FAILURE"
+            throw err
+        }
     }
-
 }

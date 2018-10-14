@@ -37,24 +37,24 @@ node('linux') {
             extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kmail']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://anongit.kde.org/kmail']]]
        }
         stage( 'Setup' ) {
+            sh echo "gem: --no-rdoc --no-ri" >> ~/.gemrc
             sh '''
-                echo "gem: --no-rdoc --no-ri" >> ~/.gemrc
-                if [ ! -d "~/.rbenv" ] 
-                then
-                git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
-                git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
-                export PATH=$PATH:~/.rbenv/bin
-                rbenv install 2.4.1
-                rbenv init -
-                rbenv local 2.4.1 && gem install bundler && ls -l && bundle install --binstubs && bundle show rspec
+                set -e
+                if ! -d ~/.rbenv ; then
+                    git clone https://github.com/sstephenson/rbenv.git ~/.rbenv
+                    git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+                    export PATH=$PATH:~/.rbenv/bin
+                    rbenv install 2.4.1
+                    rbenv init -
+                    rbenv local 2.4.1 && gem install bundler && ls -l && bundle install --binstubs && bundle show rspec
                 else
-                echo "Rbenv exists, moving on"
-                export PATH=$PATH:~/.rbenv/bin
-                rbenv install 2.4.1
-                rbenv init -
-                rbenv local 2.4.1 && gem install bundler && ls -l && bundle install --binstubs && bundle show rspec
+                    echo "Rbenv exists, moving on"
+                    export PATH=$PATH:~/.rbenv/bin
+                    rbenv install 2.4.1
+                    rbenv init -
+                    rbenv local 2.4.1 && gem install bundler && ls -l && bundle install --binstubs && bundle show rspec
                 fi
-            '''
+                '''
             sh 'bundle install'
             def WORKSPACE=pwd()
         }

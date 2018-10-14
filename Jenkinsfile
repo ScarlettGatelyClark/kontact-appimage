@@ -48,21 +48,22 @@ node('linux') {
                         rbenv install 2.4.1
                        fi
                        rbenv init -
-                       rbenv global 2.4.1 && gem install bundler && ls -l && bundle install --binstubs && bundle show rspec
+                       rbenv shell 2.4.1 && gem install bundler && ls -l && bundle install --binstubs && bundle show rspec
                    else
                        echo "Rbenv exists, moving on"                       
                        if [[ ! -d /var/lib/jenkins/.rbenv/versions/2.4.1 ]] ; then
                         rbenv install 2.4.1
                        fi
                        rbenv init -
-                       rbenv global 2.4.1 && gem install bundler && ls -l && bundle install --binstubs && bundle show rspec
+                       rbenv shell 2.4.1 && gem install bundler && ls -l && bundle install --binstubs && bundle show rspec
+                       bundle install
                    fi
-                   bundle install
+                   
                 '''
                 def WORKSPACE=pwd()
             }
             stage( 'Build' ) {
-                sh 'bundle exec deploy.rb'
+                sh 'rbenv shell 2.4.1 && bundle exec deploy.rb'
             }
             stage('Tests') {
                 sh 'find . -type f -exec file {} \\; | grep "not stripped"'

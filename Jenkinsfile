@@ -37,6 +37,16 @@ node('linux') {
             extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kmail']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://anongit.kde.org/kmail']]]
        }
         stage( 'Setup' ) {
+            sh 'echo 'gem: --no-rdoc --no-ri' >> ~/.gemrc'
+            sh 'if [ ! -d "~/.rbenv" ] 
+                then
+                    echo "Directory ~/.rbenv DOES NOT exists." 
+                    git clone https://github.com/sstephenson/rbenv.git ~/.rbenv'
+                    git clone https://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+                    rbenv install 2.4.1
+                    echo 'eval "$(rbenv init -)"' >> ~/.bashrc && rbenv init -
+                    cd / && rbenv local 2.4.1 && gem install bundler && ls -l && bundle install --binstubs && bundle show rspec
+                fi
             sh 'bundle install'
             def WORKSPACE=pwd()
         }

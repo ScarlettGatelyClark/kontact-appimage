@@ -37,7 +37,7 @@ node('linux') {
             extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'kmail']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://anongit.kde.org/kmail']]]
        }
         stage( 'Setup' ) {
-            sh echo "gem: --no-rdoc --no-ri" >> ~/.gemrc
+            sh 'echo "gem: --no-rdoc --no-ri" >> ~/.gemrc'
             sh '''
                 set -e
                 if ! -d ~/.rbenv ; then
